@@ -2,6 +2,7 @@
 #include <iostream>
 #include <limits>
 #include <vector>
+#include <random>
 using namespace std;
 
 Game::Game(const string& playerName)
@@ -27,7 +28,7 @@ void Game::showStatus() const {
 void Game::playerTurn() {
     while (true) {
         showStatus();
-        cout << "Actions: 1) [Attack]  2) [Use Potion]  3) [Skip]\nChoose: ";
+        cout << "Actions: 1) [Attack]  2) [Use Potion]  3) [Skip]  4) [Use Item]\nChoose: ";
         int choice;
         if (!(cin >> choice)) {
             cin.clear();
@@ -49,12 +50,65 @@ void Game::playerTurn() {
             }
             int dmg = player.attack(enemies[idx]);
             cout << "You attacked " << enemies[idx].getName() << " for " << dmg << " damage.\n";
+            // If enemy died from this attack, generate loot
+            if (!enemies[idx].isAlive()) {
+                // RNG setup
+                static std::random_device rd;
+                static std::mt19937 gen(rd());
+                std::uniform_int_distribution<> chance(1, 100);
+                int roll = chance(gen);
+
+                if (roll <= 50) {
+                    // 50% chance potion
+                    player.getInventory().addPotion(1);
+                    cout << enemies[idx].getName() << " dropped a potion! You picked it up.\n";
+                } else if (roll <= 80) {
+                    // 30% chance damage item
+                    std::uniform_int_distribution<> dmgVal(2, 6);
+                    int val = dmgVal(gen);
+                    Item it("Damage Rune", val, Item::Type::Damage);
+                    player.getInventory().addItem(it);
+                    cout << enemies[idx].getName() << " dropped a Damage Rune (+" << val << " ATK).\n";
+                } else {
+                    // 20% chance defense item
+                    std::uniform_int_distribution<> defVal(1, 4);
+                    int val = defVal(gen);
+                    Item it("Defense Amulet", val, Item::Type::Defense);
+                    player.getInventory().addItem(it);
+                    cout << enemies[idx].getName() << " dropped a Defense Amulet (+" << val << " DEF).\n";
+                }
+            }
             break;
         } else if (choice == 2) {
             if (player.usePotion()) {
                 cout << "You used a potion and recovered HP.\n";
             } else {
                 cout << "No potions available!\n";
+            }
+            break;
+        } else if (choice == 4) {
+            cout << "Item Actions: 1) Use Damage Item  2) Use Defense Item\nChoose: ";
+            int ic;
+            if (!(cin >> ic)) {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Invalid input.\n";
+                continue;
+            }
+            if (ic == 1) {
+                if (player.useDamageItem()) {
+                    cout << "You used a Damage item. Attack increased.\n";
+                } else {
+                    cout << "No Damage items available.\n";
+                }
+            } else if (ic == 2) {
+                if (player.useDefenseItem()) {
+                    cout << "You used a Defense item. Defense increased.\n";
+                } else {
+                    cout << "No Defense items available.\n";
+                }
+            } else {
+                cout << "Invalid item action.\n";
             }
             break;
         } else if (choice == 3) {
@@ -70,9 +124,9 @@ void Game::enemyTurn() {
     for (auto &e : enemies) {
         if (!e.isAlive()) continue;
         if (!player.isAlive()) break;
-        e.aiAction(player);
+        int dealt = e.attack(player);
         cout << e.getName() << " attacked " << player.getName() << " for "
-                  << e.getAttackPower() << " damage.\n";
+                  << dealt << " damage.\n";
     }
 }
 

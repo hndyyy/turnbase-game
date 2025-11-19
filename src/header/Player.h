@@ -14,6 +14,10 @@ public:
     int attack(Character &target) override;
     bool usePotion();
 
+    // Use items from inventory
+    bool useDamageItem();
+    bool useDefenseItem();
+
     // Getter untuk inventory
     Inventory& getInventory() { 
         return inventory;

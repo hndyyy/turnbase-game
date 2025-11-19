@@ -9,9 +9,10 @@ protected:
     int maxHP;
     int hp;
     int attackPower;
+    int defense;
 
 public:
-    Character(const std::string& name, int maxHP, int attackPower);
+    Character(const std::string& name, int maxHP, int attackPower, int defense = 0);
     virtual ~Character() = default;
 
     // Actions
@@ -24,6 +25,7 @@ public:
     int getHP() const;
     int getMaxHP() const;
     int getAttackPower() const;
+    int getDefense() const;
 
     // For healing/support
     virtual void heal(int amount);
