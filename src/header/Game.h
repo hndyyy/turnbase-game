@@ -10,6 +10,9 @@ private:
     Player player;
     std::vector<Enemy> enemies;
     int round;
+    int level;
+
+    void spawnEnemiesForLevel(int level);
 
     void showStatus() const;
     void playerTurn();
