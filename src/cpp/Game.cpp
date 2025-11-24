@@ -6,16 +6,36 @@
 using namespace std;
 
 Game::Game(const string& playerName)
-    : player(playerName), round(1) {
-    enemies.emplace_back("Goblin", 40, 10, 5);
-    enemies.emplace_back("Orc", 60, 12, 10);
-    enemies.emplace_back("Wolf", 35, 9, 3);
+    : player(playerName), round(1), level(1) {
+    spawnEnemiesForLevel(level);
+}
+
+void Game::spawnEnemiesForLevel(int level) {
+    enemies.clear();
+
+    struct EDef { const char* name; int baseHP; int baseAtk; int baseLoot; } defs[] = {
+        {"Goblin", 30, 8, 3},
+        {"Orc", 45, 11, 6},
+        {"Wolf", 28, 7, 2}
+    };
+
+    int count = 3 + (level - 1); // increase enemies per level
+    for (int i = 0; i < count; ++i) {
+        auto &d = defs[i % 3];
+        int hp = d.baseHP + (level - 1) * 10;
+        int atk = d.baseAtk + (level - 1) * 2;
+        int loot = d.baseLoot + (level - 1);
+        enemies.emplace_back(d.name, hp, atk, loot);
+    }
+    cout << "-- Spawning level " << level << " enemies (" << enemies.size() << ") --\n";
 }
 
 void Game::showStatus() const {
-    cout << "\n\n---- Round " << round << " ----\n";
+    cout << "\n\n---- Level " << level << "  Round " << round << " ----\n";
     cout << player.getName() << " HP: " << player.getHP() << "/" << player.getMaxHP()
-              << " | Potions: " << player.getInventory().getPotionCount() << "\n";
+              << " | DEF: " << player.getDefense()
+              << " | Potions: " << player.getInventory().getPotionCount()
+              << " | Items: " << player.getInventory().getItemCount() << "\n";
     cout << "Enemies:\n";
     for (size_t i = 0; i < enemies.size(); ++i) {
         cout << "  [" << i << "] " << enemies[i].getName()
@@ -146,8 +166,13 @@ void Game::start() {
     while (true) {
         playerTurn();
         if (checkVictory()) {
-            cout << "You defeated all enemies! Victory!\n";
-            break;
+            cout << "You defeated all enemies in this level!\n";
+            level++;
+            round = 1;
+            player.heal(20);
+            cout << "Level up! Now level " << level << ". You feel a bit stronger.\n";
+            spawnEnemiesForLevel(level);
+            continue;
         }
         enemyTurn();
         if (checkDefeat()) {

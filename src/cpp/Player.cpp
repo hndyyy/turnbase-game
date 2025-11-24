@@ -2,7 +2,7 @@
 #include "Item.h"
 
 Player::Player(const std::string& name)
-    : Character(name, 100, 18), inventory() {
+    : Character(name, 100, 18, 10), inventory() {
     // dimulai dengan 3 potion
     inventory.addPotion(3);
 }
