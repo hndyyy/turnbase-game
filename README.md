@@ -1,12 +1,12 @@
 # Turn Base RPG
 
-ini gtw  mau diisi apa, tlong isiin
+Merupakan Proyek Live Coding dari Kelompok 7 yang berisikan anggota kelompok:
 
 ## Authors
 
 - [@hndyyy](https://www.github.com/hndyyy)
 - [@pppariddd](https://github.com/pppariddd)
-- ntar masukin githublu
+- Ojan ga punya Github (hiks)
 
 
 
