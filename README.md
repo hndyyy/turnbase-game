@@ -1,12 +1,11 @@
 # Turn Base RPG
 
+
+## About the project
 Merupakan Proyek Live Coding dari Kelompok 7 yang berisikan anggota kelompok:
-<<<<<<< HEAD
-=======
 - Ahmad Fauzan Harahap
 - Muhammad Farid Kadafi
 - Handy Arya Ramadhan
->>>>>>> e23603f2355ada04ff799d4c814db16c6d00c057
 
 ## Authors
 
