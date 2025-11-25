@@ -25,5 +25,5 @@ Merupakan Proyek Live Coding dari Kelompok 7 yang berisikan anggota kelompok:
 
 - Open terminal, and run the game
 ```bash
-  g++ main.cpp && ./a.exe
+  ./game.exe
 ```
